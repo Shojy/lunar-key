@@ -1,0 +1,32 @@
+﻿@model LoginWithRecoveryCodeViewModel
+@{
+    ViewData["Title"] = "Recovery code verification";
+}
+
+
+<form class="form-signin" method="post">
+    <img class="mb-4" src="/images/logo.png" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Recovery code verfication</h1>
+    <p>
+        You have requested to login with a recovery code. This login will not be remembered until you provide
+        an authenticator app code at login or disable 2FA and login again.
+    </p>
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="form-label-group">
+        <input name="RecoveryCode" type="text" id="inputCode" class="form-control" placeholder="Recovery Code" autocomplete="off" required autofocus>
+        <label for="RecoveryCode">Recovery Code</label>
+    </div>
+    <br />
+    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login">
+
+    <a asp-action="Login">Back to login</a>
+
+
+    <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+</form>
+
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

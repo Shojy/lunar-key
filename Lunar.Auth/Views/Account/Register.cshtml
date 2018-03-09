@@ -1,0 +1,46 @@
+﻿@model RegisterViewModel
+@{
+    ViewData["Title"] = "Register";
+    Layout = "_AuthLayout";
+}
+
+
+
+
+<form class="form-signin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+    <img class="mb-4" src="/images/logo.png" alt="" width="72" height="72">
+    <h1 class="h3 mb-3 font-weight-normal">Create a new account</h1>
+
+
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="form-label-group">
+        <input name="Username" type="text" id="inputUser" class="form-control input-top" placeholder="Username" required autofocus>
+        <label for="inputUser">Username</label>
+    </div>
+
+    <div class="form-label-group">
+        <input name="Email" type="email" id="inputEmail" class="form-control input-middle" placeholder="Email address" required>
+        <label for="inputEmail">Email address</label>
+    </div>
+    <div class="form-label-group">
+        <input name="Password" type="password" id="inputPassword" class="form-control input-middle" placeholder="Password" required>
+        <label for="inputPassword">Password</label>
+    </div>
+    <div class="form-label-group">
+        <input name="ConfirmPassword" type="password" id="inputConfirmPassword" class="form-control input-bottom" placeholder="Confirm Password" required>
+        <label for="inputConfirmPassword">Confirm Password</label>
+    </div>
+    <br />
+    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Register">
+    <a asp-action="Login">Already have an account?</a>
+
+
+
+    <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
+</form>
+
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

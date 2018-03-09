@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  lunar.auth:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - USER_SECRETS_ID=aspnet-Lunar.Auth-9D738705-1070-4917-BC0A-B56FC0DA42EA
+    volumes:
+      - $APPDATA/Microsoft/UserSecrets/$USER_SECRETS_ID:/root/.microsoft/usersecrets/$USER_SECRETS_ID
+    ports:
+      - "80"

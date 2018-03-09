@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  lunar.auth:
+    image: lunar.auth
+    build:
+      context: .
+      dockerfile: Lunar.Auth/Dockerfile
