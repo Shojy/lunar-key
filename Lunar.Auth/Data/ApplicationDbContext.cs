@@ -1,14 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Lunar.Auth.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Lunar.Auth.Models;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Lunar.Auth.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public interface IApplicationDbContext
+    {
+        DbSet<IdentityUserRole<string>> UserRoles { get; set; }
+        DbSet<IdentityRole> Roles { get; set; }
+        DbSet<IdentityRoleClaim<string>> RoleClaims { get; set; }
+        DbSet<ApplicationUser> Users { get; set; }
+        DbSet<IdentityUserClaim<string>> UserClaims { get; set; }
+        DbSet<IdentityUserLogin<string>> UserLogins { get; set; }
+        DbSet<IdentityUserToken<string>> UserTokens { get; set; }
+        DatabaseFacade Database { get; }
+        IModel Model { get; }
+        
+    }
+
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>, IApplicationDbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

@@ -21,10 +21,14 @@ namespace Client
                 return;
             }
 
-            var tokenClient = new TokenClient(disco.TokenEndpoint, "mvc", "secret");
-            var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
+            //var tokenClient = new TokenClient(disco.TokenEndpoint, "api", "secret");
+            //var tokenResponse = await tokenClient.RequestClientCredentialsAsync("api1");
 
-            if(tokenResponse.IsError)
+
+            var tokenClient = new TokenClient(disco.TokenEndpoint, "ro.client", "secret");
+            var tokenResponse = await tokenClient.RequestResourceOwnerPasswordAsync("admin@localhost", "Qwerty1!", "api1");
+
+            if (tokenResponse.IsError)
             {
                 Console.WriteLine(tokenResponse.Error);
                 return;

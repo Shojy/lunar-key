@@ -17,13 +17,13 @@ namespace Lunar.Auth
         public static IEnumerable<Client> GetClients() => new List<Client> {
             new Client
             {
-                ClientId = "mvc",
-                ClientName = "MVC Client",
+                ClientId = "api",
+                ClientName = "API Client",
                 AllowedGrantTypes = GrantTypes.ClientCredentials,
                 RequireConsent = false,
 
                 ClientSecrets = { new Secret("secret".Sha256()) },
-                
+
 
                 AllowedScopes = {
                     IdentityServerConstants.StandardScopes.OpenId,
@@ -31,9 +31,40 @@ namespace Lunar.Auth
                     "api1"
                 },
                 AllowOfflineAccess = true
+            },
+            new Client
+            {
+                ClientId = "ro.client",
+                AllowedGrantTypes = GrantTypes.ResourceOwnerPassword,
+
+                ClientSecrets ={new Secret("secret".Sha256())},
+                AllowedScopes = { "api1" }
+            },
+
+            new Client
+            {
+                ClientId = "mvc",
+                ClientName = "MVC Client",
+                AllowedGrantTypes = GrantTypes.Implicit,
+
+                // where to redirect to after login
+                RedirectUris = { "http://localhost:5002/signin-oidc" },
+
+                // where to redirect to after logout
+                PostLogoutRedirectUris = { "http://localhost:5002/signout-callback-oidc" },
+
+                AllowedScopes = new List<string>
+                {
+                    IdentityServerConstants.StandardScopes.OpenId,
+                    IdentityServerConstants.StandardScopes.Profile
+                }
             }
         };
 
-        public static IEnumerable<IdentityResource> GetIdentityResources() => new List<IdentityResource>();
+        public static IEnumerable<IdentityResource> GetIdentityResources() => new List<IdentityResource>
+        {
+            new IdentityResources.OpenId(),
+            new IdentityResources.Profile()
+        };
     }
 }

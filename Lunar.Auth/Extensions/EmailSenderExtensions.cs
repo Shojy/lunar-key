@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Lunar.Auth.Services;
 
-namespace Lunar.Auth.Services
+namespace Lunar.Auth.Extensions
 {
     public static class EmailSenderExtensions
     {
