@@ -27,12 +27,15 @@ namespace Lunar.Auth
             var builder = new ConfigurationBuilder();
 
             builder.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json");
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional:true);
 
             if (env.IsDevelopment())
             {
                 builder.AddUserSecrets<Startup>();
             }
+
+            builder.AddEnvironmentVariables();
 
             Configuration = builder.Build();
         }

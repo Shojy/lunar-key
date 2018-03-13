@@ -6,3 +6,5 @@ services:
     build:
       context: .
       dockerfile: Lunar.Auth/Dockerfile
+    ports:
+      - 80
