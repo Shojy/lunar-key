@@ -11,9 +11,9 @@ pipelines:
         caches:
           - dotnetcore
         script: # Modify the commands below to build your repository.
-          - export PROJECT_NAME=Lunar.Auth
+          - export PROJECT_NAME=Lunar.Auth.sln
           - export TEST_NAME=Lunar.Auth.Tests
-          - dotnet restore
+          - dotnet restore $PROJECT_NAME
           - dotnet build $PROJECT_NAME
 #          - dotnet test $TEST_NAME
 
