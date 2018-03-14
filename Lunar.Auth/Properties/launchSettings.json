@@ -13,7 +13,6 @@
       "launchBrowser": true,
       "launchUrl": "http://localhost:5000/",
       "environmentVariables": {
-        "ConnectionStrings:DefaultConnection": "Server=ShojySurface,1433\\\\MSSQLSERVER;Database=LunarAuth;User ID=sa;Password=Quezacot1;MultipleActiveResultSets=true",
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },

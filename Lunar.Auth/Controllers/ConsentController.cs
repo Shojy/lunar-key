@@ -94,36 +94,36 @@ namespace Lunar.Auth.Controllers
             ConsentResponse grantedConsent = null;
 
             // user clicked 'no' - send back the standard 'access_denied' response
-            if (model.Button == "no")
+            switch (model.Button)
             {
-                grantedConsent = ConsentResponse.Denied;
-            }
-            // user clicked 'yes' - validate the data
-            else if (model.Button == "yes" && model != null)
-            {
-                // if the user consented to some scope, build the response model
-                if (model.ScopesConsented != null && model.ScopesConsented.Any())
-                {
-                    var scopes = model.ScopesConsented;
-                    if (ConsentOptions.EnableOfflineAccess == false)
+                case "no":
+                    grantedConsent = ConsentResponse.Denied;
+                    break;
+                case "yes":
+                    // if the user consented to some scope, build the response model
+                    if (model.ScopesConsented != null && model.ScopesConsented.Any())
                     {
-                        scopes = scopes.Where(x => x != IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess);
+                        var scopes = model.ScopesConsented;
+                        if (ConsentOptions.EnableOfflineAccess == false)
+                        {
+                            scopes = scopes.Where(x => x != IdentityServer4.IdentityServerConstants.StandardScopes.OfflineAccess);
+                        }
+
+                        grantedConsent = new ConsentResponse
+                        {
+                            RememberConsent = model.RememberConsent,
+                            ScopesConsented = scopes.ToArray()
+                        };
+                    }
+                    else
+                    {
+                        result.ValidationError = ConsentOptions.MustChooseOneErrorMessage;
                     }
 
-                    grantedConsent = new ConsentResponse
-                    {
-                        RememberConsent = model.RememberConsent,
-                        ScopesConsented = scopes.ToArray()
-                    };
-                }
-                else
-                {
-                    result.ValidationError = ConsentOptions.MustChooseOneErrorMessage;
-                }
-            }
-            else
-            {
-                result.ValidationError = ConsentOptions.InvalidSelectionErrorMessage;
+                    break;
+                default:
+                    result.ValidationError = ConsentOptions.InvalidSelectionErrorMessage;
+                    break;
             }
 
             if (grantedConsent != null)
