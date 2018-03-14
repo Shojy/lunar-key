@@ -3,7 +3,7 @@
 # Only use spaces to indent your .yml configuration.
 # -----
 # You can specify a custom docker image from Docker Hub as your build environment.
-image: microsoft/dotnet:sdk
+image: microsoft/aspnetcore-build:1.0-2.0
 
 options:
   docker: true
@@ -13,11 +13,8 @@ pipelines:
     - step:
         caches:
           - dotnetcore
-        script: # Modify the commands below to build your repository.
-          - export PROJECT_NAME=Lunar.Auth.sln
-          - export TEST_NAME=Lunar.Auth.Tests
-          - dotnet restore $PROJECT_NAME
-          - dotnet build $PROJECT_NAME
+        script:
+          - /bin/bash -c "dotnet restore ./Lunar.Auth.sln && dotnet publish ./Lunar.Auth.sln -c Release"
 #          - dotnet test $TEST_NAME
 
 
