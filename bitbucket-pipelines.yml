@@ -9,24 +9,25 @@ options:
   docker: true
 
 pipelines:
-  master:
-    - step:
-        caches:
+  branches:
+    master:
+      - step:
+          caches:
           - dotnetcore
-        script:
+          script:
           - /bin/bash -c "dotnet restore ./Lunar.Auth.sln && dotnet publish ./Lunar.Auth.sln -c Release"
 
-    - step:
-        name: Deployment
-        deployment: production
-        trigger: manual
-        script:
+      - step:
+          name: Deployment
+          deployment: production
+          trigger: manual
+          script:
           - export VERSION=0.1.0+$BITBUCKET_COMMIT
           - export IMAGE=$DOCKER_REGISTRY/lunar.auth:$VERSION
           - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD $DOCKER_REGISTRY
           - docker build -f Dockerfile $IMAGE
           - docker push $IMAGE
-        services:
+          services:
           - docker
 
 
