@@ -1,6 +1,7 @@
 ﻿@model LoginWith2faViewModel
 @{
     ViewData["Title"] = "Two-factor authentication";
+    Layout = "_AuthLayout";
 }
 
 
@@ -29,7 +30,6 @@
     Don't have access to your authenticator device? You can
     <a asp-action="LoginWithRecoveryCode" asp-route-returnUrl="@ViewData["ReturnUrl"]">log in with a recovery code</a>.
 
-    <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
 </form>
 
 

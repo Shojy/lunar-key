@@ -14,6 +14,8 @@ using Microsoft.Extensions.Options;
 using Lunar.Auth.Models;
 using Lunar.Auth.Models.AccountViewModels;
 using Lunar.Auth.Services;
+using Newtonsoft.Json;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace Lunar.Auth.Controllers
 {
@@ -49,6 +51,16 @@ namespace Lunar.Auth.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ExternalScheme);
 
             ViewData["ReturnUrl"] = returnUrl;
+            ViewBag.Request = JsonConvert.SerializeObject(new
+            {
+                this.Request.Protocol,
+                this.Request.Headers,
+                this.Request.Host,
+                this.Request.IsHttps,
+                this.Request.Scheme,
+                this.Request.Path,
+                this.Request.Query
+            });
             return View();
         }
 
@@ -58,34 +70,55 @@ namespace Lunar.Auth.Controllers
         public async Task<IActionResult> Login(LoginViewModel model, string returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            SignInResult result;
+            ApplicationUser user = null;
+            if (model.Username.Contains("@"))
+            {
+                user = _userManager.Users.FirstOrDefault(u =>
+                    u.Email.Equals(model.Username, StringComparison.CurrentCultureIgnoreCase));
+            }
+            else
+            {
+                user = _userManager.Users.FirstOrDefault(u =>
+                    u.UserName.Equals(model.Username, StringComparison.CurrentCultureIgnoreCase));
+            }
+
+            if (null != user)
             {
                 // This doesn't count login failures towards account lockout
                 // To enable password failures to trigger account lockout, set lockoutOnFailure: true
-                var result = await _signInManager.PasswordSignInAsync(model.Username, model.Password, model.RememberMe, lockoutOnFailure: false);
-                if (result.Succeeded)
-                {
-                    _logger.LogInformation("User logged in.");
-                    return RedirectToLocal(returnUrl);
-                }
-                if (result.RequiresTwoFactor)
-                {
-                    return RedirectToAction(nameof(LoginWith2fa), new { returnUrl, model.RememberMe });
-                }
-                if (result.IsLockedOut)
-                {
-                    _logger.LogWarning("User account locked out.");
-                    return RedirectToAction(nameof(Lockout));
-                }
-                else
-                {
-                    ModelState.AddModelError(string.Empty, "Invalid login attempt.");
-                    return View(model);
-                }
+                result = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe,
+                    lockoutOnFailure: false);
+            }
+            else
+            {
+                result = SignInResult.Failed;
             }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            if (result.Succeeded)
+            {
+                _logger.LogInformation("User logged in.");
+                return RedirectToLocal(returnUrl);
+            }
+            if (result.RequiresTwoFactor)
+            {
+                return RedirectToAction(nameof(LoginWith2fa), new { returnUrl, model.RememberMe });
+            }
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning("User account locked out.");
+                return RedirectToAction(nameof(Lockout));
+            }
+            else
+            {
+                ModelState.AddModelError(string.Empty, "Invalid login attempt.");
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -221,7 +254,7 @@ namespace Lunar.Auth.Controllers
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { UserName = model.Username, Email = model.Email };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

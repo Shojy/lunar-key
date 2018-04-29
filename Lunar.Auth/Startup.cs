@@ -15,6 +15,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Lunar.Auth.Data;
 using Lunar.Auth.Models;
 using Lunar.Auth.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Facebook;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace Lunar.Auth
 {
@@ -27,7 +30,7 @@ namespace Lunar.Auth
             var builder = new ConfigurationBuilder();
 
             builder.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional:true);
 
             if (env.IsDevelopment())
@@ -66,8 +69,10 @@ namespace Lunar.Auth
                 .AddConfigurationStore(options =>
                 {
                     options.ConfigureDbContext = builder =>
+                    {
                         builder.UseSqlServer(connectionString,
                             sql => sql.MigrationsAssembly(migrationsAssembly));
+                    };
                 })
                 .AddOperationalStore(options =>
                 {
@@ -79,22 +84,71 @@ namespace Lunar.Auth
                     options.EnableTokenCleanup = true;
                     options.TokenCleanupInterval = 30;
                 })
-                //.AddInMemoryPersistedGrants()
-                //.AddInMemoryIdentityResources(Config.GetIdentityResources())
-                //.AddInMemoryApiResources(Config.GetResources())
-                .AddInMemoryClients(Config.GetClients())
+               
                 .AddAspNetIdentity<ApplicationUser>();
 
+            
+            
+            if (!string.IsNullOrWhiteSpace(Configuration["Authentication:Facebook:AppId"]) 
+                || !string.IsNullOrWhiteSpace(Configuration["Authentication.Facebook.AppId"]))
+            {
+                services.AddAuthentication()
+                    .AddFacebook(opts =>
+                    {
+                        opts.AppId = Configuration["Authentication:Facebook:AppId"] ?? Configuration["Authentication.Facebook.AppId"];
+                        opts.AppSecret = Configuration["Authentication:Facebook:AppSecret"] ?? Configuration["Authentication.Facebook.AppSecret"];
+                    });
+            }
 
-            //services.AddAuthentication()
+            if (!string.IsNullOrWhiteSpace(Configuration["Authentication:Twitter:ConsumerKey"]) 
+                || !string.IsNullOrWhiteSpace(Configuration["Authentication.Twitter.ConsumerKey"]))
+            {
+                services.AddAuthentication()
+                    .AddTwitter(opts =>
+                    {
+                        opts.ConsumerKey = Configuration["Authentication:Twitter:ConsumerKey"] ?? Configuration["Authentication.Twitter.ConsumerKey"];
+                        opts.ConsumerSecret = Configuration["Authentication:Twitter:ConsumerSecret"] ?? Configuration["Authentication.Twitter.ConsumerSecret"];
+                    });
+            }
 
+            if (!string.IsNullOrWhiteSpace(Configuration["Authentication:Microsoft:ApplicationId"]) 
+                || !string.IsNullOrWhiteSpace(Configuration["Authentication.Microsoft.ApplicationId"]))
+            {
+                services.AddAuthentication()
+                    .AddMicrosoftAccount(opts =>
+                    {
+                        opts.ClientId = Configuration["Authentication:Microsoft:ApplicationId"] ?? Configuration["Authentication.Microsoft.ApplicationId"];
+                        opts.ClientSecret = Configuration["Authentication:Microsoft:Password"] ?? Configuration["Authentication.Microsoft.Password"];
+                    });
+            }
 
+            if (!string.IsNullOrWhiteSpace(Configuration["Authentication:AzureActiveDirectory:ApplicationId"])
+                || !string.IsNullOrWhiteSpace(Configuration["Authentication.AzureActiveDirectory.ApplicationId"]))
+            {
+
+                services.AddAuthentication()
+                    .AddAzureAd(opts =>
+                    {
+                        opts.CallbackPath = Configuration["Authentication:AzureActiveDirectory:CallbackPath"];
+                        opts.Instance = Configuration["Authentication:AzureActiveDirectory:Instance"];
+                        opts.ClientId = Configuration["Authentication:AzureActiveDirectory:ApplicationId"] ?? Configuration["Authentication.AzureActiveDirectory.ApplicationId"];
+                        opts.TenantId = Configuration["Authentication:AzureActiveDirectory:TennantId"] ?? Configuration["Authentication.AzureActiveDirectory.TennantId"];
+                        opts.Domain = Configuration["Authentication:AzureActiveDirectory:Domain"] ?? Configuration["Authentication.AzureActiveDirectory.Domain"];
+                    });
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             InitializeDatabase(app);
+
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedProto
+                
+            });
+
 
             if (env.IsDevelopment())
             {

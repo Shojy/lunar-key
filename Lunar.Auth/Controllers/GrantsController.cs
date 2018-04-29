@@ -17,7 +17,7 @@ namespace Lunar.Auth.Controllers
     /// <summary>
     /// This sample controller allows a user to revoke grants given to clients
     /// </summary>
-    [SecurityHeaders]
+    //[SecurityHeaders]
     [Authorize]
     public class GrantsController : Controller
     {
@@ -51,6 +51,7 @@ namespace Lunar.Auth.Controllers
         public async Task<IActionResult> Revoke(string clientId)
         {
             await _interaction.RevokeUserConsentAsync(clientId);
+            
             return RedirectToAction("Index");
         }
 

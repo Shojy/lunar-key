@@ -4,6 +4,12 @@
     ViewData.AddActivePage(ManageNavPages.TwoFactorAuthentication);
 }
 
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Dashboard</a></li>
+    <li class="breadcrumb-item"><a asp-controller="Manage" asp-action="Index">Profile</a></li>
+    <li class="breadcrumb-item">Two Factor Authentication</li>
+
+</ol>
 <h4>@ViewData["Title"]</h4>
 @if (Model.Is2faEnabled)
 {

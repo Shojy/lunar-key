@@ -10,52 +10,77 @@
     Layout = "_AuthLayout";
 }
 
+<div class="form-signin">
+    <form asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
+        <img class="mb-4" src="/images/logo.png" alt="" width="72" height="72">
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <a asp-action="Register">Don't have an account?</a>
 
-<form class="form-signin" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post">
-    <img class="mb-4" src="/images/logo.png" alt="" width="72" height="72">
-    <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
-    <a asp-action="Register">Don't have an account?</a>
 
+        <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div asp-validation-summary="All" class="text-danger"></div>
-
-    <div class="form-label-group">
-        <input name="Username" type="text" id="inputEmail" class="form-control input-top" placeholder="Username or Email address" required autofocus>
-        <label for="inputEmail">Username or Email address</label>
-    </div>
-    <div class="form-label-group">
-        <input name="Password" type="password" id="inputPassword" class="form-control input-bottom" placeholder="Password" required>
-        <label for="inputPassword">Password</label>
-    </div>
-    <div class="checkbox mb-3">
-        <label>
-            <input asp-for="RememberMe" />
-            @Html.DisplayNameFor(m => m.RememberMe)
-        </label>
-    </div>
-    <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign in">
-    <a asp-action="ForgotPassword" class="text-sm-center">Forgot your password?</a>
-
-    <p class="mt-5 mb-3 text-muted">&copy; 2017-2018</p>
-</form>
-@{
-    var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-    if (loginProviders.Count > 0)
-    {
-
+        <div class="form-label-group">
+            <input name="Username" type="text" id="inputUser" class="form-control input-top" placeholder="Username or Email address" required autofocus>
+            <label for="inputUser" class="">Username or Email address</label>
+        </div>
+        <div class="form-label-group">
+            <input name="Password" type="password" id="inputPassword" class="form-control input-bottom" placeholder="Password" required>
+            <label for="inputPassword" class="">Password</label>
+        </div>
+        <div class="checkbox mb-3">
+            <label>
+                <input asp-for="RememberMe" />
+                @Html.DisplayNameFor(m => m.RememberMe)
+            </label>
+        </div>
+        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign in">
+        <a asp-action="ForgotPassword" class="text-sm-center">Forgot your password?</a>
+    </form>
+    @{
+        var loginProviders = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+        if (loginProviders.Count > 0)
         {
-            <form asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
-                <div>
-                    <p>
-                        @foreach (var provider in loginProviders)
-                        {
-                            <button type="submit" class="btn btn-default" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.Name</button>
-                        }
-                    </p>
-                </div>
-            </form>
+
+            {
+                <form asp-action="ExternalLogin" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
+                    <div>
+                        <p>
+                            Or use one of the below:<br />
+                            @foreach (var provider in loginProviders)
+                            {
+                                switch (provider.Name)
+                                {
+                                    case "Facebook":
+                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fa fa-2x fa-facebook"></i></button>
+
+                                        break;
+                                    case "Twitter":
+                                        <button type="submit" class="btn btn-info" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fa fa-2x fa-twitter"></i></button>
+
+                                        break;
+                                    case "Microsoft":
+                                        <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fa fa-2x fa-windows"></i></button>
+                                        break;
+                                    case "AzureAd":
+                                        <button type="submit" class="btn btn-success" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account"><i class="fa fa-2x fa-gears"></i></button>
+                                        break;
+                                    default:
+                                        <button type="submit" class="btn btn-secondary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
+                                        break;
+                                }
+                            }
+                        </p>
+                    </div>
+                </form>
+            }
         }
     }
+
+
+</div>
+
+@section Styles {
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 }
 
 @section Scripts {

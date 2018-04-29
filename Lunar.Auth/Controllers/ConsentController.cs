@@ -19,7 +19,7 @@ namespace Lunar.Auth.Controllers
     /// <summary>
     /// This controller processes the consent UI
     /// </summary>
-    [SecurityHeaders]
+    //[SecurityHeaders]
     [Authorize]
     public class ConsentController : Controller
     {

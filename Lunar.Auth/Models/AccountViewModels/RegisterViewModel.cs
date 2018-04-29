@@ -9,6 +9,7 @@ namespace Lunar.Auth.Models.AccountViewModels
     public class RegisterViewModel
     {
         [Required]
+        [RegularExpression(@"^[^@]+$", ErrorMessage = "You may not include the @ character in your username.")]
         [Display(Name = "Username")]
         public string Username { get; set; }
 

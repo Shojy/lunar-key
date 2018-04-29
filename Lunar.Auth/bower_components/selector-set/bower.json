@@ -1,0 +1,16 @@
+{
+  "name": "selector-set",
+  "version": "1.0.6",
+  "main": "selector-set.js",
+  "ignore": [
+    ".*",
+    "Gruntfile.js",
+    "package.json",
+    "test/"
+  ],
+  "devDependencies": {
+    "benchmark": "~1.0.0",
+    "d3": "~3.3.0",
+    "qunit": "~1.12.0"
+  }
+}

@@ -3,6 +3,13 @@
     ViewData["Title"] = "Enable authenticator";
     ViewData.AddActivePage(ManageNavPages.TwoFactorAuthentication);
 }
+<ol class="breadcrumb">
+    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Dashboard</a></li>
+    <li class="breadcrumb-item"><a asp-controller="Manage" asp-action="Index">Profile</a></li>
+    <li class="breadcrumb-item"><a asp-controller="Manage" asp-action="TwoFactorAuthentication">Two Factor Authentication</a></li>
+    <li class="breadcrumb-item active">Enable Authenticator</li>
+
+</ol>
 
 <h4>@ViewData["Title"]</h4>
 <div>
@@ -49,4 +56,13 @@
 
 @section Scripts {
     @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script src="~/lib/qrcode/qrcode.js"></script>
+    <script type="text/javascript">
+        new QRCode(document.getElementById("qrCode"),
+            {
+                text: "@Html.Raw(Model.AuthenticatorUri)",
+                width: 150,
+                height: 150
+            });
+    </script>
 }

@@ -1,0 +1,38 @@
+{
+  "name": "css-polyfills",
+  "version": "0.0.16",
+  "scripts": {
+    "develop": "bower install && grunt",
+    "test": "grunt test",
+    "blanket": {
+      "pattern": [
+        "css-polyfills.js"
+      ]
+    }
+  },
+  "files": [
+    "dist/css-polyfills.js"
+  ],
+  "dependencies": {
+    "less": "~1.6"
+  },
+  "devDependencies": {
+    "grunt-blanket-mocha": "git://github.com/philschatz/grunt-blanket-mocha.git#fixes-for-octokit.js",
+    "chai": "~1.8.1",
+    "mocha": "~1.14.0",
+    "http-server": "~0.5.5",
+    "requirejs": "~2.1.9",
+    "grunt-contrib-coffee": "~0.7",
+    "grunt-contrib-concat": "~0.3.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/philschatz/css-polyfills.git"
+  },
+  "keywords": [
+    "javascript",
+    "css",
+    "polyfill"
+  ],
+  "author": "Philip Schatz"
+}
